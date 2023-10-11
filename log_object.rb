@@ -19,17 +19,22 @@ class LogObject
     @log.each do |log_line|
       line = LineReader.new(log_line)
 
-      if line.new_game?
-        add_game
-      elsif line.player_event?
-        add_player(line)
-      elsif line.kill?
-        add_kill(line)
-      end
+      line_rule(line)
     end
   end
 
   private
+
+  def line_rule(line)
+    if line.new_game?
+      add_game
+    elsif line.player_event?
+      add_player(line)
+    elsif line.kill?
+      add_kill(line)
+      add_mean_of_death(line)
+    end
+  end
 
   def last_game
     @games.last
@@ -59,5 +64,11 @@ class LogObject
     else
       last_game.kills[killer].add_kill
     end
+  end
+
+  def add_mean_of_death(line)
+    mean_of_death = line.mean_of_death
+
+    last_game.kills_by_means[mean_of_death] += 1
   end
 end

@@ -28,4 +28,8 @@ class LineReader
   def victim
     @line.match(/((?<=killed\s).*(?=\sby))/)[0]
   end
+
+  def mean_of_death
+    @line.match(/((?<=by\s).*)/)[0]
+  end
 end

@@ -26,7 +26,8 @@ class LogParser
     @output["game_#{game.id}"] = {
       total_kills: game.total_kills,
       players: game.players,
-      kills: add_kills(game)
+      kills: add_kills(game),
+      kills_by_means: game.kills_by_means
     }
   end
 
