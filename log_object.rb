@@ -5,7 +5,7 @@ require './lib/line_reader'
 require './objects/game'
 require './objects/player'
 
-class Parser
+class LogObject
   attr_reader :games
 
   WORLD_KILLER = '<world>'
