@@ -7,6 +7,8 @@ require './objects/player'
 class Parser
   attr_reader :games
 
+  WORLD_KILLER = '<world>'
+
   def initialize
     @log = LogReader.open_log_file
     @games = []
@@ -23,6 +25,17 @@ class Parser
 
         last_game.players << player.name
         last_game.kills[player.name] = player
+      elsif kill?(line)
+        last_game.add_kill
+
+        killer = get_killer(line)
+        victim = get_victim(line)
+
+        if killer == WORLD_KILLER
+          last_game.kills[victim].remove_kill
+        else
+          last_game.kills[killer].add_kill
+        end
       end
     end
   end
@@ -43,5 +56,17 @@ class Parser
 
   def get_player(line)
     line.match(/((?<=n\\).*?(?=\\t))/)[0]
+  end
+
+  def kill?(line)
+    line.match(/(?:^|\W)Kill(?:$|\W)/) ? true : false
+  end
+
+  def get_killer(line)
+    line.match(/([^:]+).(?=\skilled)/)[0].strip
+  end
+
+  def get_victim(line)
+    line.match(/((?<=killed\s).*(?=\sby))/)[0]
   end
 end
