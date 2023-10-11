@@ -26,12 +26,20 @@ class LogParser
     @output["game_#{game.id}"] = {
       total_kills: game.total_kills,
       players: game.players,
-      kills: add_kills(game),
-      kills_by_means: game.kills_by_means
+      kills: kills(game),
+      kills_by_means: game.kills_by_means,
+      ranking: ranking(game)
     }
   end
 
-  def add_kills(game)
+  def kills(game)
     game.kills.transform_values(&:kills)
+  end
+
+  def ranking(game)
+    sort_kills = kills(game).sort_by { |name, kills| [-kills, name] }.to_h
+    sort_kills.each_with_object({}).with_index do |((name, _kills), hash), index|
+      hash[index + 1] = name
+    end
   end
 end
